@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scroll magic demo</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-size: 2rem;
+      }
+
+      header {
+        background: red;
+      }
+
+      main {
+        margin: 1em auto 0 auto;
+        max-width: 50rem;
+        perspective: 1000px;
+      }
+
+      #target {
+        transition: transform 200ms ease-out;
+        border-radius: 10px;
+        padding: 1em;
+      }
+
+      .pulse {
+        animation: pulse 1s infinite alternate;
+      }
+
+      .emoji {
+        display: inline-block;
+        animation: emoji 1s infinite alternate;
+        transform: rotate(0);
+      }
+
+      @keyframes pulse {
+        from {
+          border: 50px solid rgba(130, 0, 0, 1);
+        }
+
+        to {
+          border: 10px solid rgba(130, 0, 0, 0);
+        }
+      }
+
+      @keyframes emoji {
+        0% {
+          font-size: 0;
+          transform: rotate(0);
+        }
+
+        25% {
+          font-size: 8rem;
+          transform: rotate(0.5turn) translateX(-50%);
+        }
+
+        50% {
+          font-size: 2rem;
+          transform: rotate(0.8turn) translateX(50%);
+        }
+
+        to {
+          font-size: 10rem;
+          transform: rotate(1turn) translateX(0);
+        }
+      }
+    </style>
+    <!-- This script tag was copied from https://code.jquery.com/ -->
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/debug.addIndicators.min.js"
+      defer
+    ></script>
+    <script type="module">
+      // init controller
+      const p = document.querySelector("#target");
+      const controller = new ScrollMagic.Controller();
+
+      //   const tween = Tween.to("#target", 1, {
+      //     rotation: 360,
+      //     ease: Linear.easeNone,
+      //   });
+
+      // create a scene
+      const scene = new ScrollMagic.Scene({
+        triggerElement: "#target",
+        duration: 1000, // the scene should last for a scroll distance of 100px
+        offset: 200, // start this scene after scrolling for 50px
+      })
+        .setPin("#target") // pins the element for the the scene's duration
+        .addTo(controller) // assign the scene to the controller
+        .addIndicators()
+        // .on("enter", (e) => {
+        //   p.classList.add("pulse");
+        // })
+        // .on("leave", (e) => {
+        //   p.classList.remove("pulse");
+        // })
+        .on("progress", ({ progress }) => {
+          p.style.transform = `scale(${progress + 1}) rotateZ(${progress}turn)`;
+        });
+
+      console.log(scene);
+
+      const emoji = "🤩";
+      let emojiIndex = 0;
+
+      function moveEmoji() {
+        let text = $(p).text();
+        text = text.replaceAll(emoji, "");
+        const words = text.split(" ");
+        let newWords = words.map((word, i) => {
+          if (emojiIndex !== i) {
+            return word;
+          }
+
+          return `${word} <span class="emoji">${emoji}</span>`;
+        });
+
+        newWords = newWords.filter((word) => word !== "");
+
+        $(p).html(newWords.join(" "));
+
+        if (emojiIndex === words.length - 1) {
+          emojiIndex = 0;
+        } else {
+          emojiIndex++;
+        }
+      }
+
+      setInterval(moveEmoji, 500);
+    </script>
+  </head>
+  <body>
+    <header>Header</header>
+    <main>
+      <p>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati
+        sapiente optio itaque! Consequuntur ad qui numquam nulla vero accusamus
+        sed, aut in rem exercitationem omnis sequi delectus cupiditate fugit
+        doloribus deserunt, repudiandae tempore sint consectetur aliquid. Hic
+        esse ea ullam quo, corrupti, quae minima nobis sed temporibus, mollitia
+        illum? Facere?
+      </p>
+      <p id="target" class="pulse">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+        necessitatibus libero nesciunt assumenda, iste mollitia sint et,
+        repellat exercitationem cum nostrum ullam at iure veniam minima, facere
+        neque ex nisi adipisci. Placeat enim animi deleniti quae maxime ex
+        commodi consequuntur, voluptatum aliquid aspernatur. Deserunt, amet.
+        Quia quam, ipsa nobis vel, magni excepturi quae labore voluptate dicta
+        laboriosam, dignissimos ad odit fuga! Cumque blanditiis dolorem
+        quibusdam consectetur odit ducimus possimus quo, accusamus voluptates
+        commodi consequuntur eum repellendus et, corporis provident porro illo
+        suscipit id. Ullam vel, tempore assumenda deserunt nisi esse delectus
+        neque iure, facilis earum repudiandae aliquam eius amet placeat? Nostrum
+        ipsam neque sit nihil voluptas alias ad reiciendis libero mollitia,
+        tempora modi voluptates ducimus error corrupti non odit! Possimus at
+        mollitia libero quas labore animi error dolorem saepe molestias facilis,
+        blanditiis deserunt obcaecati inventore tempora quam est quibusdam
+      </p>
+      <p>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        alias, doloribus rerum incidunt fuga illum deserunt vitae? Numquam nemo
+        est reprehenderit nulla ipsa? Dolorum natus eligendi minus incidunt
+        autem assumenda aut maxime sequi laudantium beatae dolores quam,
+        voluptatem nemo delectus qui quisquam? Omnis dignissimos perferendis
+        ipsam vel. Dolorum, mollitia pariatur ducimus hic asperiores corrupti?
+        Quo debitis eius a, voluptatibus dicta enim cum optio sed natus sapiente
+        aspernatur necessitatibus atque fugiat facere possimus ex aperiam quae!
+        Nam, quos porro eius possimus omnis esse dolorem, explicabo, debitis
+        consequuntur veritatis saepe harum illo quibusdam deserunt minus fugiat
+        commodi minima earum! Sequi, aut porro?
+      </p>
+    </main>
+  </body>
+</html>
